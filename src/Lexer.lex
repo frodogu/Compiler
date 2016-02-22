@@ -12,25 +12,12 @@ import java.util.*;
 %{
 	StringBuffer string = new StringBuffer();
 
-	Map dictionary = new HashMap();
-	int keyType, valueType;
-
 	private Symbol symbol(int type) {
         return new Symbol(type, yyline, yycolumn);
     }
     private Symbol symbol(int type, Object value) {
         return new Symbol(type, yyline, yycolumn, value);
     }
-
-    private void setKeyType(int type) {
-    	keyType = type;
-    }
-
-    private void setValueType(int type) {
-    	ValueType = type;
-    }
-
-    private void addToDictionary()
 %}
 
 /* Begin working on Macro Statement */
@@ -77,8 +64,8 @@ DictionaryItem = {ValidType} ":" {ValidType}
 		"rat"  {return symbol(sym.RATIONAL);}
 		"float"{return symbol(sym.FLOAT);}
 
-		"dict" {dictionary.clear(); yybegin(DICTIONARY); return symbol(sym.DICTIONARY);}
-		"seq"  {yybegin(SEQUENCE);}
+		"dict" {yybegin(DICTIONARYANDSEQUENCE); return symbol(sym.DICTIONARY);}
+		"seq"  {yybegin(DICTIONARYANDSEQUENCE); return symbol(sym.SEQUENCE);}
 
 		/* declaration */
 		"tdef" {return symbol(sym.TYPEDEF);}
@@ -171,10 +158,10 @@ DictionaryItem = {ValidType} ":" {ValidType}
     "\\"            {string.append('\\');}
 }
 
-<DICTIONARY> {
+<DICTIONARYANDSEQUENCE> {
 	"<"    {return symbol(sym.LANGLEBRACKT);}
 	">"	   {yybegin(YYINITIAL); return symbol(sym.RANGLEBRACKT);}
-
+	","    {return symbol(sym.COMMA);}
 
 	"char" {return symbol(sym.CHAR);}
 	"int"  {return symbol(sym.INTEGER);}
@@ -182,14 +169,7 @@ DictionaryItem = {ValidType} ":" {ValidType}
 	"float"{return symbol(sym.FLOAT);}
 	"top"  {return symbol(sym.TOP);}
 
-
 	{WhiteSpace} { /* ignore */ }
-	
-}
-
-
-<SEQUENCE> {
-	
 }
 
 
