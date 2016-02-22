@@ -1,5 +1,6 @@
 import java_cup.runtime.*;
 import java.util.regex.Pattern;
+import java.util.*;
 
 %%
 %class Lexer
@@ -11,6 +12,9 @@ import java.util.regex.Pattern;
 %{
 	StringBuffer string = new StringBuffer();
 
+	Map dictionary = new HashMap();
+	int keyType, valueType;
+
 	private Symbol symbol(int type) {
         return new Symbol(type, yyline, yycolumn);
     }
@@ -18,12 +22,15 @@ import java.util.regex.Pattern;
         return new Symbol(type, yyline, yycolumn, value);
     }
 
-    private Symbol symbol(int[] type, int numOfType) {
-    	int i = 0;
-    	for (i=0; i<numOfType; i++) {
-    		return new Symbol(type, yyline, yy)
-    	}
+    private void setKeyType(int type) {
+    	keyType = type;
     }
+
+    private void setValueType(int type) {
+    	ValueType = type;
+    }
+
+    private void addToDictionary()
 %}
 
 /* Begin working on Macro Statement */
@@ -54,8 +61,9 @@ Rational = {Integer}"_"{Digit}+"/"{Digit}+ | {Integer}"/"{Digit}+
 Float = {Integer}"\."{Integer}
 
 /* dictionary */
-DictionaryChar = "{" ({Integer} ":" {Character} ",")* {Integer} ":" {Character} "," "}"
-Distionary
+ValidType = {Interger} | {Character} | {Rational} | {Float}
+DictionaryItem = {ValidType} ":" {ValidType} 
+
 
 
 %%
@@ -69,7 +77,7 @@ Distionary
 		"rat"  {return symbol(sym.RATIONAL);}
 		"float"{return symbol(sym.FLOAT);}
 
-		"dict" {yybegin(DICTIONARY);}
+		"dict" {dictionary.clear(); yybegin(DICTIONARY); return symbol(sym.DICTIONARY);}
 		"seq"  {yybegin(SEQUENCE);}
 
 		/* declaration */
@@ -138,7 +146,7 @@ Distionary
 	/* number */
 	{Integer}    {return symbol(sym.INTEGER_LITERAL, new Integer(yytext()));}
 	{Rational}   {return symbol(sym.RATIONAL_LITERAL);} /* turn into a double? */
-	{Float}      {return symbol(sym.FLOAT_LITERAL);}
+	{Float}      {return symbol(sym.FLOAT_LITERAL, new Float(yytext()));}
 
 	/* character */
 	{Character}  {return symbol(sym.CHARACTER_LITERAL, yytext().charAt(0));}
@@ -164,22 +172,48 @@ Distionary
 }
 
 <DICTIONARY> {
-	"<"    {return symbol(sym.LANGLEBRACKT);}
-	">"    {return symbol(sym.RANGLEBRACKT);}
-	"{"    {return (sym.LBRACE);}
-	"}"    {yybegin(YYINITIAL); return (sym.RBRACE);}
+	"<"    {yybegin(DICTIONARYKEY); return symbol(sym.LANGLEBRACKT);}
 
-	"char" {return symbol(sym.CHAR);}
-	"bool" {return symbol(sym.BOOLEAN);}
-	"int"  {return symbol(sym.INTEGER);}
-	"rat"  {return symbol(sym.RATIONAL);}
-	"float"{return symbol(sym.FLOAT);}
-	"top"  {return symbol(sym.TOP);}
+	"{"    {yybegin(DICTIONARYKEY); return (sym.LBRACE);}
+	"}"    {yybegin(YYINITIAL); return (sym.DICTIONARY_LITERAL, dictionary);}
 
 	{Identifier} {return symbol(sym.IDENTIFIER, yytext());}
+	{WhiteSpace} { /* ignore */ }
+	"="          {return symbol(sym.EQ);}
+
+	{Integer}   {return symbol(sym.INTEGER_LITERAL, new Integer(yytext()));}
+	{Character} {return symbol(sym.CHARACTER_LITERAL, yytext().charAt());}
+	{Float}     {return symbol(sym.FLOAT_LITERAL, new Float(yytext()));}
+	{Rational}  {return symbol(sym.RATIONAL_LITERAL, new )} 						/* DEBUG */
+	
+}
+
+<DICTIONARYKEY> {
+	","    {yybegin(DICTIONARYVALUE);}
+
+
+	"char" {setValueType(sym.CHAR); return symbol(sym.CHAR);}
+	"int"  {setValueType(sym.INTEGER); return symbol(sym.INTEGER);}
+	"rat"  {setValueType(sym.RATIONAL); return symbol(sym.RATIONAL);}
+	"float"{setValueType(sym.FLOAT); return symbol(sym.FLOAT);}
+	"top"  {setValueType(sym.TOP); return symbol(sym.TOP);}
 
 
 }
+
+<DICTIONARYVALUE> {
+	>"     {yybegin(DICTIONARY); return symbol(sym.RANGLEBRACKT);}
+
+	"char" {setValueType(sym.CHAR); return symbol(sym.CHAR);}
+	"int"  {setValueType(sym.INTEGER); return symbol(sym.INTEGER);}
+	"rat"  {setValueType(sym.RATIONAL); return symbol(sym.RATIONAL);}
+	"float"{setValueType(sym.FLOAT); return symbol(sym.FLOAT);}
+	"top"  {setValueType(sym.TOP); return symbol(sym.TOP);}
+
+
+
+}
+
 
 <SEQUENCE> {
 	
