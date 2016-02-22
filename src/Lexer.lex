@@ -172,46 +172,19 @@ DictionaryItem = {ValidType} ":" {ValidType}
 }
 
 <DICTIONARY> {
-	"<"    {yybegin(DICTIONARYKEY); return symbol(sym.LANGLEBRACKT);}
+	"<"    {return symbol(sym.LANGLEBRACKT);}
+	">"	   {yybegin(YYINITIAL); return symbol(sym.RANGLEBRACKT);}
 
-	"{"    {yybegin(DICTIONARYKEY); return (sym.LBRACE);}
-	"}"    {yybegin(YYINITIAL); return (sym.DICTIONARY_LITERAL, dictionary);}
 
-	{Identifier} {return symbol(sym.IDENTIFIER, yytext());}
+	"char" {return symbol(sym.CHAR);}
+	"int"  {return symbol(sym.INTEGER);}
+	"rat"  {return symbol(sym.RATIONAL);}
+	"float"{return symbol(sym.FLOAT);}
+	"top"  {return symbol(sym.TOP);}
+
+
 	{WhiteSpace} { /* ignore */ }
-	"="          {return symbol(sym.EQ);}
-
-	{Integer}   {return symbol(sym.INTEGER_LITERAL, new Integer(yytext()));}
-	{Character} {return symbol(sym.CHARACTER_LITERAL, yytext().charAt());}
-	{Float}     {return symbol(sym.FLOAT_LITERAL, new Float(yytext()));}
-	{Rational}  {return symbol(sym.RATIONAL_LITERAL, new )} 						/* DEBUG */
 	
-}
-
-<DICTIONARYKEY> {
-	","    {yybegin(DICTIONARYVALUE);}
-
-
-	"char" {setValueType(sym.CHAR); return symbol(sym.CHAR);}
-	"int"  {setValueType(sym.INTEGER); return symbol(sym.INTEGER);}
-	"rat"  {setValueType(sym.RATIONAL); return symbol(sym.RATIONAL);}
-	"float"{setValueType(sym.FLOAT); return symbol(sym.FLOAT);}
-	"top"  {setValueType(sym.TOP); return symbol(sym.TOP);}
-
-
-}
-
-<DICTIONARYVALUE> {
-	>"     {yybegin(DICTIONARY); return symbol(sym.RANGLEBRACKT);}
-
-	"char" {setValueType(sym.CHAR); return symbol(sym.CHAR);}
-	"int"  {setValueType(sym.INTEGER); return symbol(sym.INTEGER);}
-	"rat"  {setValueType(sym.RATIONAL); return symbol(sym.RATIONAL);}
-	"float"{setValueType(sym.FLOAT); return symbol(sym.FLOAT);}
-	"top"  {setValueType(sym.TOP); return symbol(sym.TOP);}
-
-
-
 }
 
 
