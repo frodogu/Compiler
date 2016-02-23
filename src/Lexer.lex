@@ -132,7 +132,7 @@ DictionaryItem = {ValidType} ":" {ValidType}
 
 	/* number */
 	{Integer}    {return symbol(sym.INTEGER_LITERAL, new Integer(yytext()));}
-	{Rational}   {return symbol(sym.RATIONAL_LITERAL);} 
+	{Rational}   {return symbol(sym.RATIONAL_LITERAL); new Rational(yytext());} 
 	{Float}      {return symbol(sym.FLOAT_LITERAL, new Float(yytext()));}
 
 	/* character */
