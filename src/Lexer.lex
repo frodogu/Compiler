@@ -1,4 +1,5 @@
 import java_cup.runtime.*;
+import java.lang.*;
 import java.util.regex.Pattern;
 import java.util.*;
 
@@ -151,11 +152,11 @@ DictionaryItem = {ValidType} ":" {ValidType}
 	
 	[^\n\r\"\\]+ 	{string.append(yytext());}
 
-	"\\t"			{string.append('\t');}
-	"\\n"			{string.append('\n');}
-	"\\r"			{string.append('\r');}
-	"\\\""          {string.append('\"');}
-    "\\"            {string.append('\\');}
+	\\t			{string.append('\t');}
+	\\n			{string.append('\n');}
+	\\r			{string.append('\r');}
+	\\\"        {string.append('\"');}
+    \\          {string.append('\\');}
 }
 
 <DICTIONARYANDSEQUENCE> {
