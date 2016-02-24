@@ -75,7 +75,7 @@ DictionaryItem = {ValidType} ":" {ValidType}
 		"void" {return symbol(sym.VOID);}
 
 		/* statement */
-		"var"   {return symbol(sym.VARI);}
+		"var"   {return symbol(sym.VARIABLE);}
 		"if"    {return symbol(sym.IF);}
 		"fi"    {return symbol(sym.ENDIF);}
 		"else"  {return symbol(sym.ELSE);}
@@ -113,7 +113,7 @@ DictionaryItem = {ValidType} ":" {ValidType}
 	"/" {return symbol(sym.DIVIDE);}
 	"=" {return symbol(sym.EQ);}
 	"=="{return symbol(sym.EQEQ);}
-	"!="{return symbol(sym.NOTEQUAL);}
+	"!="{return symbol(sym.NOTEQ);}
 	">" {return symbol(sym.GREATER);}
 	"<" {return symbol(sym.LESS);}
 	"&" {return symbol(sym.AND);}
@@ -127,6 +127,9 @@ DictionaryItem = {ValidType} ":" {ValidType}
 	{Comment} { /* ignore */ }
 	/* whitespace */
 	{WhiteSpace} { /* ignore */ }
+
+	/* null*/
+	"null" {return symbol(NULL_LITERAL);}
 
 	/* identifier */
 	{Identifier} {return symbol(sym.IDENTIFIER, yytext());}

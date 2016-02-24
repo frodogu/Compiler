@@ -1,0 +1,24 @@
+import java_cup.runtime.*;
+import java.lang.*;
+
+scan with {: return lexer.next_token(); :};
+
+parser code {:
+
+:};
+
+terminal		INTEGER, CHAR, RATIONAL, FLOAT, BOOLEAN, TOP;
+terminal		DICTIONARY, SEQUENCE;
+terminal		TYPEDEF, FUNCTIONDEF, ALIAS, VOID;
+terminal		VARIABLE, IF, ENDIF, ELSE, ELSEIF, THEN, WHILE, FORALL, RETURN, READ, PRINT, DO, ENDDO, IN, MAIN;
+terminal		TRUE, FALSE;
+terminal		LPAREN, RPAREN, LBRACE, RBRACE, LBRACK, RBRACK, SEMICOLON, COMMA, DOT;
+terminal		LANGLEBRACKT, RANGLEBRACKET;
+terminal 		PLUS, MINUS, TIMES, DIVIDE, EQ, EQEQ, NOTEQ, GREATER, LESS, AND, OR, ANDAND, OROR, CONCATENATION;
+
+terminal Integer  INTEGER_LITERAL;
+terminal Float	  FLOAT_LITERAL;
+terminal Rational RATIONAL_LITERAL;
+terminal String	  STRING_LITERAL;
+
+nonterminal
