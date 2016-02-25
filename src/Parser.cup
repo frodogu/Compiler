@@ -19,6 +19,7 @@ terminal		TRUE, FALSE;
 terminal		LPAREN, RPAREN, LBRACE, RBRACE, LBRACK, RBRACK, SEMICOLON, COMMA, DOT;
 terminal		LANGLEBRACKT, RANGLEBRACKET;
 terminal 		PLUS, MINUS, TIMES, DIVIDE, EQ, EQEQ, nonEQ, GREATER, LESS, AND, OR, ANDAND, OROR, CONCATENATION;
+terminal 		BOOLEAN_LITERAL_TRUE, BOOLEAN_LITERAL_FALSE;
 
 terminal Integer   INTEGER_LITERAL;
 terminal Float	   FLOAT_LITERAL;
@@ -26,7 +27,6 @@ terminal Rational  RATIONAL_LITERAL;
 terminal String	   STRING_LITERAL, IDENTIFIER;
 terminal Character CHARACTER_LITERAL;
 terminal /* ??? */ IDENTIFIER;
-terminal String    BOOLEAN_LITERAL;
 
 terminal NULL_LITERAL;
 
@@ -50,6 +50,7 @@ non terminal return_statement
 
 precedence left PLUS, MINUS;
 precedence left TIMES, DIVIDE;
+
 
 start with goal;
 
@@ -130,19 +131,28 @@ data_literal ::= INTEGER_LITERAL
 
 
 int_declaration ::= INTEGER IDENTIFIER EQ INTEGER_LITERAL SEMICOLOM
+				| INTEGER IDENTIFIER SEMICOLOM
 				;
 
 float_declaration ::= FLOAT IDENTIFIER EQ FLOAT_LITERAL SEMICOLOM
+					| FLOAT IDENTIFIER SEMICOLOM
 					;
 
 rational_declaration ::= RATIONAL IDENTIFIER EQ RATIONAL_LITERAL SEMICOLOM
-						;
+					|    RATIONAL IDENTIFIER SEMICOLOM
+					;
 
 boolean_declaration ::= BOOLEAN IDENTIFIER EQ BOOLEAN_LITERAL SEMICOLOM
-						;
+					| BOOLEAN IDENTIFIER SEMICOLOM
+					;
 
 character_declaration ::= CHARACTER IDENTIFIER EQ CHARACTER_LETERAL SEMICOLOM
+						| CHARACTER IDENTIFIER SEMICOLOM
 						;
+
+string_declaration ::= STRING IDENTIFIER EQ STRING_LITERAL
+					|  STRING IDENTIFIER
+					;
 
 operator ::= PLUS
 			| MINUS
