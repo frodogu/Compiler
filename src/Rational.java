@@ -6,13 +6,7 @@ public class Rational implements Comparable<Rational> {
 	private int i;
 	private int underscorePosition = 0;
 	private int slashPosition = 0;
-public class Rational implements Comparable<Rational> {
-    private static Rational zero = new Rational(0, 1);
-
-    private int num;   // the numerator
-    private int den;   // the denominator
-    private int coeff  // the coefficient 
-
+    
     /* create a rational number with a string input */
     public Rational(String s) {
         for (i=0; i<s.length(); i++) {
