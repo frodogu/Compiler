@@ -4,21 +4,162 @@ import java.lang.*;
 scan with {: return lexer.next_token(); :};
 
 parser code {:
-
+	public void syntax_error(Symbol current_token) { report_error(
+         "Syntax error at line " + (current_token.left+1) + ", column "
+				+ current_token.right, null );
+	}
 :};
 
-terminal		INTEGER, CHAR, RATIONAL, FLOAT, BOOLEAN, TOP;
+terminal		INTEGER, CHARACTER, RATIONAL, FLOAT, BOOLEAN, TOP;
 terminal		DICTIONARY, SEQUENCE;
 terminal		TYPEDEF, FUNCTIONDEF, ALIAS, VOID;
-terminal		VARIABLE, IF, ENDIF, ELSE, ELSEIF, THEN, WHILE, FORALL, RETURN, READ, PRINT, DO, ENDDO, IN, MAIN;
+terminal		VARIABLE, IF, ENDIF, ELSE, ELSEIF, THEN, WHILE, FORALL, RETURN, READ, PRINT, DO, ENDDO, IN;
+terminal 		MAIN;
 terminal		TRUE, FALSE;
 terminal		LPAREN, RPAREN, LBRACE, RBRACE, LBRACK, RBRACK, SEMICOLON, COMMA, DOT;
 terminal		LANGLEBRACKT, RANGLEBRACKET;
-terminal 		PLUS, MINUS, TIMES, DIVIDE, EQ, EQEQ, NOTEQ, GREATER, LESS, AND, OR, ANDAND, OROR, CONCATENATION;
+terminal 		PLUS, MINUS, TIMES, DIVIDE, EQ, EQEQ, nonEQ, GREATER, LESS, AND, OR, ANDAND, OROR, CONCATENATION;
 
-terminal Integer  INTEGER_LITERAL;
-terminal Float	  FLOAT_LITERAL;
-terminal Rational RATIONAL_LITERAL;
-terminal String	  STRING_LITERAL;
+terminal Integer   INTEGER_LITERAL;
+terminal Float	   FLOAT_LITERAL;
+terminal Rational  RATIONAL_LITERAL;
+terminal String	   STRING_LITERAL, IDENTIFIER;
+terminal Character CHARACTER_LITERAL;
+terminal /* ??? */ IDENTIFIER;
+terminal String    BOOLEAN_LITERAL;
 
-nonterminal
+terminal NULL_LITERAL;
+
+non terminal goal;
+non terminal expressions;
+non terminal expression; 
+non terminal operator, 
+non terminal numeric_type, primitive_type
+non terminal variable_identifier, variable_value; 
+non terminal delaration;
+non terminal variable_declaration
+non terminal dictonary_declaration, sequence_declaration;
+non terminal if_then_statement, if_then_elseif_else_statement;
+non terminal while_do_statement, 
+non terminal forall_do_statement, 
+non terminal function_declaration, field_or_variable_type_declaration, function_return_type
+non terminal function_return_type, function_identifier, input_arguments, declaration_body;
+non terminal assignment;
+non terminal print_statement
+non terminal return_statement
+
+precedence left PLUS, MINUS;
+precedence left TIMES, DIVIDE;
+
+start with goal;
+
+goal ::= expressions
+	;
+
+expressions ::= expressions expression
+				| expression
+				;	 
+
+expression ::= expression expression
+			| declaration
+			| statement
+			| LPAREN expresion RPAREN
+			;
+
+declaration ::= main_function_declaration
+			|	variable_declaration
+			|	function_declaration
+			;
+
+variable_declaration ::= aggragate_type_declaration
+					   | primitive_type_declaration
+					   ;
+
+aggragate_type_declaration ::= dictionary_declaration
+							| sequence_declaration
+							;
+
+primitive_type_declaration ::= int_declaration
+							| float_declaration
+							| rational_declaration
+							| boolean_declaration
+							| character_declaration
+							| string_declaration
+							;
+
+dictionary_declaration ::= DICTIONARY LANGLEBRACKET type_declaration type_declaration RANGLEBRACKET EQ 
+							LBRACE dictionary_contents RBRACE SEMICOLOM
+							;
+sequence_declaration ::= SEQUENCE LANGLEBRACKET type_declaration type declaration RANGLEBRACKET EQ
+							LBRACK sequence_contents RBRACK SEMICOLOM
+							; 
+
+
+type_declaration ::= INTEGER
+				   | CHARACTER
+				   | FLOAT
+				   | RATIONAL
+				   | TOP
+				   | BOOLEAN
+				   ; 
+
+dictionary_contents ::= dictionary_contents dictionary_content
+					|   dictionary_content
+					;
+
+sequence_contents ::= sequence_contents sequences_content
+					| sequence_content
+					;
+
+
+dictionary_content ::= data_literal COMMA data_literal
+					| /* empty */
+					;
+
+sequence_content ::= data_literal COMMA
+				 |  /* empty */
+				 ;
+
+data_literal ::= INTEGER_LITERAL
+			   | CHARACTER_LITERAL
+			   | FLOAT_LITERAL
+			   | RATIONAL_LITERAL
+			   | BOOLEAN_LITERAL
+			   ;
+
+
+
+int_declaration ::= INTEGER IDENTIFIER EQ INTEGER_LITERAL SEMICOLOM
+				;
+
+float_declaration ::= FLOAT IDENTIFIER EQ FLOAT_LITERAL SEMICOLOM
+					;
+
+rational_declaration ::= RATIONAL IDENTIFIER EQ RATIONAL_LITERAL SEMICOLOM
+						;
+
+boolean_declaration ::= BOOLEAN IDENTIFIER EQ BOOLEAN_LITERAL SEMICOLOM
+						;
+
+character_declaration ::= CHARACTER IDENTIFIER EQ CHARACTER_LETERAL SEMICOLOM
+						;
+
+operator ::= PLUS
+			| MINUS
+			| TIMES
+			| DIVIDE
+			;
+
+numeric_type ::= primitive_type | 
+
+
+function_declaration = FUNCTIONDEF function_return_type input_arguments declaration_body
+
+declaration_body = 
+
+print_statement ::= PRINT expression SEMICOLOM;
+
+return_statement ::= RETURN expression SEMICOLOM;
+
+
+
